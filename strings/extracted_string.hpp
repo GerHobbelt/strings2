@@ -1,6 +1,7 @@
 // Class for extracted strings
 #pragma once
 #include <string>
+#include <locale>
 #include <codecvt>
 #include "string_model.h"
 #include <unordered_set>

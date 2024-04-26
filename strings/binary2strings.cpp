@@ -147,7 +147,7 @@ __declspec(safebuffers) extracted_string* try_extract_string(const unsigned char
 		if (c == 0)
 			break;
 
-		if (c < 0x100)
+		if (c > 0 && c < 0x100) // wchar_t is signed on Unix-like, and unsigned on Windows
 		{
 			// Basic Latin, require it to be displayable ascii if in this range
 			if (!is_displayable_ascii[c])

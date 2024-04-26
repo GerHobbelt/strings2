@@ -3,20 +3,62 @@
 #pragma once
 #pragma execution_character_set( "utf-8" )
 
+#ifdef _WIN32
+#include <io.h>
+#include "dirent.h"
+#include "Shlwapi.h"
+#include "memory_strings.h"
+#else
+#include <dirent.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <wchar.h>
+#include <fnmatch.h>
+#define BOOL bool
+#define TRUE true
+#define FALSE false
+#define _isatty isatty
+#define _fileno fileno
+#define lstrcmp wcscmp
+#define _T(x) x
+#define _TCHAR wchar_t
+#define WCHAR wchar_t
+int _wtoi(const wchar_t *ws) {
+    return (int)wcstol(ws, NULL, 10);
+}
+bool PathMatchSpecA(const char* file, const char* pattern) {
+    // FNM_PATHNAME flag makes sure that '/' does not match with wildcard characters
+    // FNM_NOESCAPE treats backslash as an ordinary character
+    return fnmatch(pattern, file, FNM_PATHNAME | FNM_NOESCAPE) == 0;
+}
+int _tmain(int argc, _TCHAR* argv[]);
+int main(int argc, char* argv[]) {
+    wchar_t** wargv = new wchar_t*[argc];
+    for (int i = 0; i < argc; i++) {
+        size_t len = strlen(argv[i]) + 1;
+        wargv[i] = new wchar_t[len];
+        mbstowcs(wargv[i], argv[i], len);
+    }
+    int result = _tmain(argc, wargv);
+    for (int i = 0; i < argc; i++) {
+        delete[] wargv[i];
+    }
+    delete[] wargv;
+    return result;
+}
+#endif
+
 #include "stdafx.h"
 #include "string_parser.h"
 #include "windows.h"
 #include <sys/types.h>
-#include "dirent.h"
 #include <errno.h>
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Shlwapi.h"
 #include <stdio.h>
-#include <io.h>
 #include <fcntl.h>
-#include "memory_strings.h"
 #include <string>
 #include <filesystem>
 #define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
@@ -40,6 +82,7 @@ BOOL is_win64()
 	#endif
 }
 
+#ifdef _WIN32
 bool is_elevated(HANDLE h_Process)
 {
 	HANDLE h_Token;
@@ -66,6 +109,7 @@ bool is_elevated(HANDLE h_Process)
 
     return false;
 }
+#endif
 
 void process_folder( string dir_name, string filter, bool recursively, string_parser* parser )
 {
@@ -127,6 +171,7 @@ void process_folder( string dir_name, string filter, bool recursively, string_pa
 }
 
 
+#ifdef _WIN32
 bool get_privileges(HANDLE h_Process)
 {
 	HANDLE h_Token;
@@ -154,11 +199,14 @@ bool get_privileges(HANDLE h_Process)
 	}
 	return false;
 }
+#endif
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+#if defined(_WIN32)
 	// Enable UTF-8 console
 	SetConsoleOutputCP(65001);
+#endif
 
 	// Process the flags	
 	STRING_OPTIONS options;
@@ -341,6 +389,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		if (flag_dump_pid || flag_dump_system)
 		{
+#ifdef _WIN32
 			// Warn if running in 32 bit mode on a 64 bit OS
 			if( is_win64() && sizeof(void*) == 4 )
 			{
@@ -393,12 +442,15 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 
 			delete process;
+#endif
 		}else if (piped_input)
 		{
+#ifdef _WIN32
 			// Set "stdin" to have binary mode:
 			int result = _setmode( _fileno( stdin ), _O_BINARY );
 			if( result == -1 )
 				fprintf(stderr, "Failed to set piped data mode to binary but will continue with processing of piped data." );
+#endif
 
 			FILE* fh = fdopen(fileno(stdin), "rb");
 

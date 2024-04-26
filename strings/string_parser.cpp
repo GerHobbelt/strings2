@@ -1,5 +1,10 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "string_parser.h"
+
+#ifdef _WIN32
+#else
+#define min(a,b) ((a) < (b) ? (a) : (b))
+#endif
 
 using namespace nlohmann;
 
@@ -32,8 +37,7 @@ bool string_parser::parse_block(unsigned char* buffer, unsigned int buffer_lengt
 			for (int i = 0; i < r_vect.size(); i++)
 			{
 				bool is_interesting = std::get<3>(r_vect[i]);
-				if (is_interesting && m_options.print_interesting ||
-					!is_interesting && m_options.print_not_interesting)
+				if ((is_interesting && m_options.print_interesting) || (!is_interesting && m_options.print_not_interesting))
 				{
 					// Add the prefixes as appropriate
 					if (m_options.print_filepath)

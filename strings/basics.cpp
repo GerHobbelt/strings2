@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "basics.h"
 
 void PrintLastError(LPTSTR lpszFunction)

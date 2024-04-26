@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "memory_strings.h"
 
 bool IsWin64(HANDLE process)

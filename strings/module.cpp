@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "module.h"
 
 bool module::contains(PVOID64 address)
