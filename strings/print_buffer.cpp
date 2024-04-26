@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "print_buffer.h"
-#include <string>
+#include <string.h>
 
 print_buffer::print_buffer(int buffer_size)
 {

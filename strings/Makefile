@@ -1,7 +1,7 @@
 EXE=strings2
 
 CC=g++
-CFLAGS=-Wall -std=c++17 -fdeclspec -g
+CFLAGS=-Wall -std=c++17
 LD=$(CC)
 LDFLAGS=
 LIBS=

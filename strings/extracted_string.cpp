@@ -1,6 +1,7 @@
 // Class for extracted strings
 #include "stdafx.h"
 #include "extracted_string.hpp"
+#include <math.h>
 
 using namespace std;
 

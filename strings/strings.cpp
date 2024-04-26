@@ -120,14 +120,15 @@ void process_folder( string dir_name, string filter, bool recursively, string_pa
 	{
 		/* print all the files and directories within directory */
 		while ((ent = readdir (dir)) != NULL) {
+            size_t d_namlen = strlen(ent->d_name);
 			// Convert the path to wchar format
-			char* result = new char[ent->d_namlen + 1];
+			char* result = new char[d_namlen + 1];
 
 			if( result != NULL )
 			{
-				for( int i = 0; i < ent->d_namlen; i++ )
+				for( size_t i = 0; i < d_namlen; i++ )
 					result[i] = ent->d_name[i];
-				result[ent->d_namlen] = 0;
+				result[d_namlen] = 0;
 
 				if( (ent->d_type & DT_DIR) )
 				{
@@ -161,7 +162,7 @@ void process_folder( string dir_name, string filter, bool recursively, string_pa
 			}
 			else
 			{
-				fprintf(stderr, "Failed to allocate memory block of size %lld for filename: %s.\n", ent->d_namlen + 1, strerror(errno));
+				fprintf(stderr, "Failed to allocate memory block of size %lld for filename: %s.\n", d_namlen + 1, strerror(errno));
 			}
 		}
 		closedir (dir);

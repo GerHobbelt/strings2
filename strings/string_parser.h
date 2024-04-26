@@ -13,8 +13,7 @@
 
 using namespace std;
 
-constexpr auto MAX_STRING_SIZE = 0x2000;
-constexpr auto BLOCK_SIZE = 5e+7; // 50MB
+constexpr auto BLOCK_SIZE = 50*1024*1024; // 50MB
 
 struct STRING_OPTIONS
 {

@@ -98,7 +98,10 @@ int get_language_group(wchar_t c)
 }
 
 // Note: Buffer overrun security checks disabled, since they added ~50% overhead.
-__declspec(safebuffers) extracted_string* try_extract_string(const unsigned char* buffer, size_t buffer_size, long offset, size_t min_chars)
+#ifdef _WIN32
+__declspec(safebuffers)
+#endif
+extracted_string* try_extract_string(const unsigned char* buffer, size_t buffer_size, long offset, size_t min_chars)
 {
 	// Try extracting the string as either utf8 or unicode wchar format. Returns None if it's not a valid string.
 	int i;
